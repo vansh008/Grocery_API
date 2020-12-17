@@ -1,0 +1,278 @@
+﻿@page
+@model Grocery_API.Pages.IndexModel
+@{
+}
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Products</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+<style>
+
+    #rcorner {
+        border-radius: 25px;
+        border: 2px solid #73AD21;
+        padding: 20px;
+        width: 200px;
+        height: 150px;
+    }
+
+    table, td, th {
+        border: 1px solid black;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+</style>
+</head>
+<body style="background-color:yellowgreen">
+    <div>
+        <!-- Navigation bar code -->
+        <nav class="navbar navbar-expand-lg navbar-dark bg-warning">
+            <a class="navbar-brand" href="#">Products</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarText">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item active">
+                        <button class="btn btn-outline-dark" data-toggle="modal" data-target="#addProducts">Add New Product</button>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+
+        <!-- following division is creating main area of the web page where all products data will display -->
+        <div class="container">
+            <div class="row" id="allProducts">
+            </div>
+        </div>
+    </div>
+
+    <!-- below mentioned code will create the template to add a new product -->
+    <div class="modal" tabindex="-1" role="dialog" id="addProducts">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Add Product</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <div class="form-group">
+                            <label for="product_Name">Product Name</label>
+                            <input type="text" class="form-control" id="product_Name" aria-describedby="product_NameHelp" placeholder="Product Name">
+
+                        </div>
+                        <div class="form-group">
+                            <label for="product_category">Product category</label>
+                            <input type="text" class="form-control" id="product_category" aria-describedby="product_categoryHelp" placeholder="Product Category">
+
+                        </div>
+                        <div class="form-group">
+                            <label for="product_expire">Product Expire</label>
+                            <input type="text" class="form-control" id="product_expire" aria-describedby="product_expireHelp" placeholder="Product Expire">
+                        </div>
+                        <div class="form-group">
+                            <label for="product_price">Product Price</label>
+                            <input type="text" class="form-control" id="product_price" aria-describedby="product_priceHelp" placeholder="Product Price">
+                        </div>
+
+                        <div class="form-group" id="result">
+
+
+                        </div>
+                        <button type="button" class="btn btn-primary" onclick="addProducts()">Add Products</button>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- below mentioned code will create the template to update product data -->
+
+    <div class="modal" tabindex="-1" role="dialog" id="update_Products">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Update Product</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <div class="form-group">
+
+                            <input type="hidden" class="form-control" id="_id" aria-describedby="IdHelp">
+
+                        </div>
+                        <div class="form-group">
+                            <label for="update_product_Name">Product Name</label>
+                            <input type="text" class="form-control" id="update_product_Name" aria-describedby="update_product_NameHelp" placeholder="Product Name">
+
+                        </div>
+                        <div class="form-group">
+                            <label for="update_product_category">Product Category</label>
+                            <input type="text" class="form-control" id="update_product_category" aria-describedby="update_product_categoryHelp" placeholder="Product Category">
+
+                        </div>
+                        <div class="form-group">
+                            <label for="update_product_expire">Product Expire</label>
+                            <input type="text" class="form-control" id="update_product_expire" aria-describedby="update_product_expireHelp" placeholder="Product Expire">
+                        </div>
+                        <div class="form-group">
+                            <label for="update_product_price">Product Price</label>
+                            <input type="text" class="form-control" id="update_product_price" aria-describedby="update_product_priceHelp" placeholder="Product Price">
+                        </div>
+
+                        <div class="form-group" id="update_result">
+
+
+                        </div>
+                        <button type="button" class="btn btn-primary" onclick="updateProducts()">Update Products</button>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <! -- java script files that will help to link the front end and back end -->
+    <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-2.0.3.min.js"></script>
+    <script src="https://ajax.aspnetcdn.com/ajax/jquery.templates/beta1/jquery.tmpl.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+
+    <script>
+    var uri = 'api/Products';
+        $(document).ready(function () {
+            // Gets all Products
+            $.getJSON(uri)
+                .done(function (data) {
+                    $("#ProductsTemplate").tmpl(data).appendTo("#allProducts");
+                });
+        });
+        function getAllProducts() {
+            $.getJSON(uri)
+                .done(function (data) {
+                    $("#allProducts").text("");
+                    $("#ProductsTemplate").tmpl(data).appendTo("#allProducts");
+                });
+        }
+        function addProducts() {
+            var _product_Name = $('#product_Name').val();
+            var _product_category = $('#product_category').val();
+            var _product_expire = $('#product_expire').val();
+            var _product_price = $('#product_price').val();
+            var Product = {
+                product_Name: _product_Name,
+                product_category: _product_category,
+                product_expire: _product_expire,
+                product_price: _product_price
+
+            };
+            $.ajax({
+                type: "POST",
+                url: uri,
+                data: JSON.stringify(Product),
+                contentType: "application/json; charset=utf-8"
+            }).done(function (response) {
+                $("#result").html("Success");
+                getAllProducts();
+            }).fail(function (jqXHR, textStatus) {
+                $("#result").html("An error occured when Adding the product record.");
+            });
+        }
+        //funtion to fill the data into update template
+
+        function getupdate_Products(id) {
+            $.ajax({
+                type: "GET",
+                url: uri + "/" + id,
+                contentType: "application/json"
+            }).done(function (response) {
+                $('#_id').val(response.product_ID);
+                $('#update_product_Name').val(response.product_Name);
+                $('#update_product_category').val(response.product_category);
+                $('#update_product_expire').val(response.product_expire);
+                $('#update_product_price').val(response.product_price);
+            });
+        }
+
+        // function to update data of the product
+        function updateProducts() {
+            var _product_Name = $('#update_product_Name').val();
+            var _product_category = $('#update_product_category').val();
+            var _product_expire = $('#update_product_expire').val();
+            var _product_price = ($('#update_product_price').val());
+            var updateProducts = {
+                product_ID: parseInt($('#_id').val()),
+                product_Name: _product_Name,
+                product_category: _product_category,
+                product_expire: _product_expire,
+                product_price: _product_price
+            };
+            $.ajax({
+                type: "PUT",
+                url: uri + "/" + $('#_id').val(),
+                data: JSON.stringify(updateProducts),
+                contentType: "application/json; charset=utf-8"
+            }).done(function (response) {
+                $("#update_result").html("Success");
+                getAllProducts();
+            }).fail(function (jqXHR, textStatus) {
+                $("#update_result").html("An error occured when Adding the product record.");
+            });
+        }
+
+
+        //funtion to delete a particular product based on id
+
+        function remove(id) {
+            var yes = confirm("Are you sure you want to delete this Product?");
+            if (yes) {
+                $.ajax({
+                    type: "DELETE",
+                    url: uri + "/" + id,
+                }).done(function (response) {
+                    getAllProducts();
+                });
+            }
+        }
+    </script>
+
+    <script id="ProductsTemplate" type="text/x-jquery-tmpl">
+        <div class="col-lg-3" style="margin:10px;">
+            <div class="card card text-white bg-secondary border-warning mb-3" style="width: 18rem; padding:20px">
+                <table>
+                    <tr>
+                    <th> Product Name: ${product_Name}</th></tr>
+                    <tr>
+                    <td> Product Category :  ${product_category}</td></tr>
+                        <tr>
+                    <td> Product Expire : ${product_expire}</td></tr>
+                    <tr>
+                    <td> Product Price : ${product_price}</td></tr>
+                </table>
+                <span>
+                    <button class="btn btn-success" onclick="getupdate_Products('${product_ID}')" data-toggle="modal" data-target="#update_Products">Update</button>
+                    <a href="#" class="btn btn-outline-danger" onclick="remove('${product_ID}')">Delete</a>
+                </span>
+            </div>
+        </div>
+    </script>
+
+
+</body>
+</html>
